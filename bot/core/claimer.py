@@ -9,6 +9,7 @@ from urllib.parse import unquote
 import aiohttp
 from aiohttp_proxy import ProxyConnector
 from better_proxy import Proxy
+from bot.core.headers import headers
 from pyrogram import Client
 from pyrogram.errors import Unauthorized, UserDeactivated, AuthKeyUnregistered
 from pyrogram.raw.functions.messages import RequestWebView
@@ -132,23 +133,13 @@ class Claimer:
         except Exception as error:
             logger.error(f"{self.session_name} | Proxy: {proxy} | Error: {error}")
 
-    def get_headers(self, name: str):
-        try:
-            with open('profiles/profile.json', 'r') as file:
-                profile = json.load(file)
-        except Exception as error:
-            logger.error("Error during opening the file profile.json")
-
-        _headers = profile.get(name, {}).get('headers', {})
-        return _headers
 
     async def run(self, proxy: str | None) -> None:
         time_to_farming_end = 0
 
         proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
-        _headers = self.get_headers(name=self.session_name)
 
-        async with aiohttp.ClientSession(headers=_headers, connector=proxy_conn) as http_client:
+        async with aiohttp.ClientSession(headers=headers, connector=proxy_conn) as http_client:
             if proxy:
                 await self.check_proxy(http_client=http_client, proxy=proxy)
 
@@ -157,7 +148,7 @@ class Claimer:
                     tg_web_data = await self.get_tg_web_data(proxy=proxy)
 
                     http_client.headers["telegramRawData"] = tg_web_data
-                    _headers["telegramRawData"] = tg_web_data
+                    headers["telegramRawData"] = tg_web_data
 
                     auth_token = await self.validate_init(http_client=http_client, tg_web_data=tg_web_data)
                     http_client.headers["Authorization"] = f"Bearer {auth_token}"
