@@ -165,12 +165,12 @@ class Claimer:
 
                         status = await self.start_farming(http_client=http_client)
                         if status:
-                            time_to_farming_end = 14460
+                            time_to_farming_end = 14400
                             logger.success(f"{self.session_name} | Successful started farming")
                             logger.info(f"{self.session_name}  | Next claim in {time_to_farming_end} seconds")
                     else:
                         start_time = datetime.strptime(farming_data["activeFarmingStartedAt"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                        time_interval = timedelta(seconds=14460)
+                        time_interval = timedelta(seconds=14400)
                         current_time = datetime.utcnow()
 
                         # Check if can to claim
@@ -193,7 +193,7 @@ class Claimer:
 
                                 status = await self.start_farming(http_client=http_client)
                                 if status:
-                                    time_to_farming_end = 14460
+                                    time_to_farming_end = 14400
                                     logger.success(f"{self.session_name} | Successful started farming")
                                     logger.info(f"{self.session_name} | Next claim in {time_to_farming_end} seconds")
                         else:
@@ -214,6 +214,8 @@ class Claimer:
                 else:
                     logger.info(f"{self.session_name} | Sleep {time_to_farming_end} seconds")
                     await asyncio.sleep(delay=time_to_farming_end)
+                    # Additional extra sleep to make sure that current time is greate than farming end time
+                    await asyncio.sleep(delay=30)
 
 
 async def run_claimer(tg_client: Client, proxy: str | None):
