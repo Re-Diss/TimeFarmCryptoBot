@@ -16,7 +16,6 @@ from pyrogram.raw.functions.messages import RequestWebView
 from bot.config import settings
 from bot.utils import logger
 from bot.exceptions import InvalidSession
-from .headers import headers
 
 
 class Claimer:
@@ -54,7 +53,7 @@ class Claimer:
                 bot=await self.tg_client.resolve_peer('TimeFarmCryptoBot'),
                 platform='android',
                 from_bot_menu=False,
-                url='https://tg-tap-miniapp.laborx.io?start=k0NH5BSlKpT4RaLR/'
+                url='https://tg-tap-miniapp.laborx.io'
             ))
 
             auth_url = web_view.url
@@ -133,12 +132,23 @@ class Claimer:
         except Exception as error:
             logger.error(f"{self.session_name} | Proxy: {proxy} | Error: {error}")
 
+    def get_headers(self, name: str):
+        try:
+            with open('profiles/profile.json', 'r') as file:
+                profile = json.load(file)
+        except Exception as error:
+            logger.error("Error during opening the file profile.json")
+
+        _headers = profile.get(name, {}).get('headers', {})
+        return _headers
+
     async def run(self, proxy: str | None) -> None:
         time_to_farming_end = 0
 
         proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
+        _headers = self.get_headers(name=self.session_name)
 
-        async with aiohttp.ClientSession(headers=headers, connector=proxy_conn) as http_client:
+        async with aiohttp.ClientSession(headers=_headers, connector=proxy_conn) as http_client:
             if proxy:
                 await self.check_proxy(http_client=http_client, proxy=proxy)
 
@@ -147,7 +157,7 @@ class Claimer:
                     tg_web_data = await self.get_tg_web_data(proxy=proxy)
 
                     http_client.headers["telegramRawData"] = tg_web_data
-                    headers["telegramRawData"] = tg_web_data
+                    _headers["telegramRawData"] = tg_web_data
 
                     auth_token = await self.validate_init(http_client=http_client, tg_web_data=tg_web_data)
                     http_client.headers["Authorization"] = f"Bearer {auth_token}"
@@ -159,14 +169,14 @@ class Claimer:
                     if is_farming_started is None:
                         rand_sleep_between_farming = randint(settings.SLEEP_BETWEEN_FARMING[0],
                                                              settings.SLEEP_BETWEEN_FARMING[1])
-                        logger.info(f"Wait {rand_sleep_between_farming} seconds before start farming")
+                        logger.info(f"{self.session_name} | Wait {rand_sleep_between_farming} seconds before start farming")
                         await asyncio.sleep(delay=rand_sleep_between_farming)
 
                         status = await self.start_farming(http_client=http_client)
                         if status:
                             time_to_farming_end = 14460
                             logger.success(f"{self.session_name} | Successful started farming")
-                            logger.info(f"Next claim in {time_to_farming_end} seconds")
+                            logger.info(f"{self.session_name}  | Next claim in {time_to_farming_end} seconds")
                     else:
                         start_time = datetime.strptime(farming_data["activeFarmingStartedAt"], "%Y-%m-%dT%H:%M:%S.%fZ")
                         time_interval = timedelta(seconds=14460)
@@ -176,7 +186,7 @@ class Claimer:
                         if current_time > start_time + time_interval:
                             rand_sleep_between_claim = randint(settings.SLEEP_BETWEEN_CLAIM[0],
                                                                settings.SLEEP_BETWEEN_CLAIM[1])
-                            logger.info(f"Wait {rand_sleep_between_claim} seconds before start claming")
+                            logger.info(f"{self.session_name} | Wait {rand_sleep_between_claim} seconds before start claming")
                             await asyncio.sleep(delay=rand_sleep_between_claim)
 
                             status = await self.send_claim(http_client=http_client)
@@ -187,21 +197,21 @@ class Claimer:
 
                                 rand_sleep_between_farming = randint(settings.SLEEP_BETWEEN_FARMING[0],
                                                                      settings.SLEEP_BETWEEN_FARMING[1])
-                                logger.info(f"Wait {rand_sleep_between_farming} before start farming")
+                                logger.info(f"{self.session_name} | Wait {rand_sleep_between_farming} before start farming")
                                 await asyncio.sleep(delay=rand_sleep_between_farming)
 
                                 status = await self.start_farming(http_client=http_client)
                                 if status:
                                     time_to_farming_end = 14460
                                     logger.success(f"{self.session_name} | Successful started farming")
-                                    logger.info(f"Next claim in {time_to_farming_end} seconds")
+                                    logger.info(f"{self.session_name} | Next claim in {time_to_farming_end} seconds")
                         else:
                             end_time = start_time + timedelta(seconds=farming_data["farmingDurationInSec"])
                             current_time = datetime.utcnow()
                             time_remaining = max(end_time - current_time, timedelta(seconds=0))
                             time_to_farming_end = int(time_remaining.total_seconds())
                             logger.info(
-                                f"Farming is in progress | Wait {time_to_farming_end} seconds before farming end")
+                                f"{self.session_name} | Farming is in progress | Wait {time_to_farming_end} seconds before farming end")
 
                 except InvalidSession as error:
                     raise error
@@ -211,7 +221,7 @@ class Claimer:
                     await asyncio.sleep(delay=3)
 
                 else:
-                    logger.info(f"Sleep {time_to_farming_end} seconds")
+                    logger.info(f"{self.session_name} | Sleep {time_to_farming_end} seconds")
                     await asyncio.sleep(delay=time_to_farming_end)
 
 
