@@ -1,5 +1,7 @@
 [<img src="https://img.shields.io/badge/Telegram-%40Me-orange">](https://t.me/Re_Diss)
 
+[![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/TimeFarmCryptoBot?start=k0NH5BSlKpT4RaLR)
+
 
 
 > 🇪🇳 README in english available [here](README-EN.md)
