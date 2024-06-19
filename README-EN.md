@@ -2,7 +2,7 @@
 
 [![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/TimeFarmCryptoBot?start=k0NH5BSlKpT4RaLR)
 
-
+#### Join my [Telegram channel](https://t.me/scriptron). I will be posting news about new bots and scripts there.
 > 🇷🇺 README на русском доступен [здесь](README.md)
 
 ## Functionality
@@ -11,7 +11,7 @@
 | Multithreading                                        |     ✅     |
 | Binding a proxy to a session                          |     ✅     |
 | Auto-claiming of the revenue                          |     ✅     |
-| Auto-completion of tasks                              |   soon    |
+| Auto-completion of tasks (only non telegram for now)  |     ✅     |
 | Support tdata / pyrogram .session / telethon .session |     ✅     |
 
 ## [Settings](https://github.com/Re-Diss/TimeFarmCryptoBot/blob/main/.env-example)
@@ -19,6 +19,7 @@
 |-------------------------|----------------------------------------------------------------------------|
 | **API_ID / API_HASH**   | Platform data from which to launch a Telegram session (stock - Android)    |
 | **SLEEP_BETWEEN_CLAIM** | Delay between **Claim** in seconds _(eg [10,15])_                          |
+| **SLEEP_BETWEEN_TASK_CLAIM** | Delay between **Task reward claim** in seconds _(eg [5,10])_               |
 | **SLEEP_BETWEEN_FARMING** | Delay between **Farming** in seconds _(eg [10,15])_                        |
 | **USE_PROXY_FROM_FILE** | Whether to use proxy from the `bot/config/proxies.txt` file (True / False) |
 

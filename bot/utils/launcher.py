@@ -18,6 +18,7 @@ start_text = """
 +-------------------------------------+
 |                                     |
 |          TimeFarmCryptoBot          |
+|             by cryptron             |
 |                                     |
 +-------------------------------------+
 Select an action:
