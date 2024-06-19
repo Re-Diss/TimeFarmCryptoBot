@@ -94,7 +94,7 @@ class Claimer:
 
             return False
 
-    async def validate_init(self, http_client: aiohttp.ClientSession, tg_web_data: str) -> str:
+    async def validate_init(self, http_client: aiohttp.ClientSession, tg_web_data: str) -> str | bool:
         try:
             response = await http_client.post('https://tg-bot-tap.laborx.io/api/v1/auth/validate-init',
                                               headers={'Content-Type': 'text/plain'}, data=tg_web_data)
