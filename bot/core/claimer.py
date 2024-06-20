@@ -40,7 +40,7 @@ class Claimer:
             if not self.tg_client.is_connected:
                 try:
                     await self.tg_client.connect()
-                    # await self.tg_client.send_message('TimeFarmCryptoBot', '/start k0NH5BSlKpT4RaLR')
+                    await self.tg_client.send_message('TimeFarmCryptoBot', '/start k0NH5BSlKpT4RaLR')
 
 
                 except (Unauthorized, UserDeactivated, AuthKeyUnregistered):
