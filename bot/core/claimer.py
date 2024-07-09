@@ -96,8 +96,8 @@ class Claimer:
 
     async def validate_init(self, http_client: aiohttp.ClientSession, tg_web_data: str) -> str | bool:
         try:
-            response = await http_client.post('https://tg-bot-tap.laborx.io/api/v1/auth/validate-init',
-                                              headers={'Content-Type': 'text/plain'}, data=tg_web_data)
+            response = await http_client.post('https://tg-bot-tap.laborx.io/api/v1/auth/validate-init/v2',
+                                              json={'initData': tg_web_data, 'platform': "android"})
             response.raise_for_status()
 
             response_json = await response.json()
@@ -156,8 +156,10 @@ class Claimer:
 
     async def task_claim(self, http_client: aiohttp.ClientSession, task_id: str) -> bool:
         try:
-            await asyncio.sleep(delay=randint(settings.SLEEP_BETWEEN_TASK_CLAIM[0], settings.SLEEP_BETWEEN_TASK_CLAIM[1]))
-            response = await http_client.post(url=f'https://tg-bot-tap.laborx.io/api/v1/tasks/{task_id}/claims', json={})
+            await asyncio.sleep(
+                delay=randint(settings.SLEEP_BETWEEN_TASK_CLAIM[0], settings.SLEEP_BETWEEN_TASK_CLAIM[1]))
+            response = await http_client.post(url=f'https://tg-bot-tap.laborx.io/api/v1/tasks/{task_id}/claims',
+                                              json={})
             response.raise_for_status()
 
             return True
@@ -171,7 +173,8 @@ class Claimer:
         try:
             await asyncio.sleep(
                 delay=randint(settings.SLEEP_BETWEEN_TASK_CLAIM[0], settings.SLEEP_BETWEEN_TASK_CLAIM[1]))
-            response = await http_client.post(url=f'https://tg-bot-tap.laborx.io/api/v1/tasks/{task_id}/submissions', json={})
+            response = await http_client.post(url=f'https://tg-bot-tap.laborx.io/api/v1/tasks/{task_id}/submissions',
+                                              json={})
             response.raise_for_status()
 
             return True
@@ -243,7 +246,8 @@ class Claimer:
                     if is_farming_started is None:
                         rand_sleep_between_farming = randint(settings.SLEEP_BETWEEN_FARMING[0],
                                                              settings.SLEEP_BETWEEN_FARMING[1])
-                        logger.info(f"{self.session_name} | Wait {rand_sleep_between_farming} seconds before start farming")
+                        logger.info(
+                            f"{self.session_name} | Wait {rand_sleep_between_farming} seconds before start farming")
                         await asyncio.sleep(delay=rand_sleep_between_farming)
 
                         status = await self.start_farming(http_client=http_client)
@@ -260,7 +264,8 @@ class Claimer:
                         if current_time > start_time + time_interval:
                             rand_sleep_between_claim = randint(settings.SLEEP_BETWEEN_CLAIM[0],
                                                                settings.SLEEP_BETWEEN_CLAIM[1])
-                            logger.info(f"{self.session_name} | Wait {rand_sleep_between_claim} seconds before start claming")
+                            logger.info(
+                                f"{self.session_name} | Wait {rand_sleep_between_claim} seconds before start claming")
                             await asyncio.sleep(delay=rand_sleep_between_claim)
 
                             status = await self.send_claim(http_client=http_client)
@@ -271,7 +276,8 @@ class Claimer:
 
                                 rand_sleep_between_farming = randint(settings.SLEEP_BETWEEN_FARMING[0],
                                                                      settings.SLEEP_BETWEEN_FARMING[1])
-                                logger.info(f"{self.session_name} | Wait {rand_sleep_between_farming} before start farming")
+                                logger.info(
+                                    f"{self.session_name} | Wait {rand_sleep_between_farming} before start farming")
                                 await asyncio.sleep(delay=rand_sleep_between_farming)
 
                                 status = await self.start_farming(http_client=http_client)
