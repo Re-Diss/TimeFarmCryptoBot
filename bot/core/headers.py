@@ -1,5 +1,6 @@
 headers = {
         'Accept': '*/*',
+        'Content-Type': 'application/json',
         'Accept-Language': 'ru,en;q=0.9,en-GB;q=0.8,en-US;q=0.7',
         'Connection': 'keep-alive',
         'Origin': 'https://tg-tap-miniapp.laborx.io',
