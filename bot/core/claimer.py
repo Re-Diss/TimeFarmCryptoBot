@@ -214,42 +214,43 @@ class Claimer:
                     auth_token = await self.validate_init(http_client=http_client, tg_web_data=tg_web_data)
                     http_client.headers["Authorization"] = f"Bearer {auth_token}"
 
-                    tasks_data = await self.get_tasks_list(http_client=http_client)
-
-                    for task in tasks_data:
-                        task_id = task["id"]
-                        task_title = task["title"]
-                        task_type = task["type"]
-                        if task_type == "TELEGRAM":
-                            continue
-                        if "submission" in task.keys():
-                            status = task["submission"]["status"]
-                            if status == "CLAIMED":
-                                continue
-
-                            if status == "COMPLETED":
-                                task_data_claim = await self.task_claim(http_client=http_client, task_id=task_id)
-                                if task_data_claim:
-                                    logger.success(f"{self.session_name} | Successful claim | "
-                                                   f"Task Title: <g>{task_title}</g>")
-                                    continue
-
-                        task_data_submit = await self.task_submit(http_client=http_client, task_id=task_id)
-                        if not task_data_submit:
-                            logger.error(f"{self.session_name} | Failed Send Submission Task: {task_title}")
-                            continue
-
-                        task_data_status = await self.get_task_data(http_client=http_client, task_id=task_id)
-                        status = task_data_status["submission"]["status"]
-                        if status != "COMPLETED":
-                            logger.error(f"{self.session_name} | Task is not completed: {task_title}")
-                            continue
-
-                        task_data_claim = await self.task_claim(http_client=http_client, task_id=task_id)
-                        if task_data_claim:
-                            logger.success(f"{self.session_name} | Successful claim | "
-                                           f"Task Title: <g>{task_title}</g>")
-                            continue
+                    # Who want to fix it you are welcome
+                    # tasks_data = await self.get_tasks_list(http_client=http_client)
+                    #
+                    # for task in tasks_data:
+                    #     task_id = task["id"]
+                    #     task_title = task["title"]
+                    #     task_type = task["type"]
+                    #     if task_type == "TELEGRAM":
+                    #         continue
+                    #     if "submission" in task.keys():
+                    #         status = task["submission"]["status"]
+                    #         if status == "CLAIMED":
+                    #             continue
+                    #
+                    #         if status == "COMPLETED":
+                    #             task_data_claim = await self.task_claim(http_client=http_client, task_id=task_id)
+                    #             if task_data_claim:
+                    #                 logger.success(f"{self.session_name} | Successful claim | "
+                    #                                f"Task Title: <g>{task_title}</g>")
+                    #                 continue
+                    #
+                    #     task_data_submit = await self.task_submit(http_client=http_client, task_id=task_id)
+                    #     if not task_data_submit:
+                    #         logger.error(f"{self.session_name} | Failed Send Submission Task: {task_title}")
+                    #         continue
+                    #
+                    #     task_data_status = await self.get_task_data(http_client=http_client, task_id=task_id)
+                    #     status = task_data_status["submission"]["status"]
+                    #     if status != "COMPLETED":
+                    #         logger.error(f"{self.session_name} | Task is not completed: {task_title}")
+                    #         continue
+                    #
+                    #     task_data_claim = await self.task_claim(http_client=http_client, task_id=task_id)
+                    #     if task_data_claim:
+                    #         logger.success(f"{self.session_name} | Successful claim | "
+                    #                        f"Task Title: <g>{task_title}</g>")
+                    #         continue
 
                     farming_data = await self.get_mining_data(http_client=http_client)
                     is_farming_started = farming_data['activeFarmingStartedAt']
